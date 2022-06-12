@@ -17,7 +17,7 @@ def get_player():
     """
     data = json.loads(request.data)
     player = api.get_player(db, data["playerName"], data["season"])
-    return player.to_json(orient="records")
+    return player
 
 
 @app.route("/team", methods=["GET"])
@@ -26,8 +26,8 @@ def get_team():
     Get features of a team
     """
     data = json.loads(request.data)
-    player = api.get_team(db, data["teamName"], data["season"])
-    return player.to_json(orient="records")
+    team = api.get_team(db, data["teamName"], data["season"])
+    return team
 
 
 if __name__ == "__main__":

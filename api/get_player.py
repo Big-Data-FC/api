@@ -4,4 +4,4 @@ def get_player(appdb, name, season) -> dict:
     the given {season}
     """
     resp = appdb.get_player_by_name(name, season)
-    return resp
+    return resp.to_json(orient="records")

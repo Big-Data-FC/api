@@ -24,6 +24,15 @@ class Database:
             (self.players["short_name"] == name) & (self.players["season"] == season)
         ]
 
+    def get_players_in_team(self, name, season):
+        """
+        Returns a Pandas dataframe object containing
+        the players that played with {team} in {season}
+        """
+        return self.players.loc[
+            (self.players["club_name"] == name) & (self.players["season"] == season)
+        ]
+
     def get_team_by_name(self, name, season):
         """
         Returns a Pandas dataframe object containing
