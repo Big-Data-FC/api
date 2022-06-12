@@ -1,0 +1,11 @@
+data/
+
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+.cache/
+__pycache__/
+.pytest_cache/
+.vscode
