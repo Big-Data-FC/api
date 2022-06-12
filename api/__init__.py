@@ -1,1 +1,2 @@
-from api.get_player import get_player
+from api.get_player import *
+from api.get_team import *

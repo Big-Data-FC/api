@@ -23,3 +23,12 @@ class Database:
         return self.players.loc[
             (self.players["short_name"] == name) & (self.players["season"] == season)
         ]
+
+    def get_team_by_name(self, name, season):
+        """
+        Returns a Pandas dataframe object containing
+        the team characterized by the given {name} and {season}
+        """
+        return self.teams.loc[
+            (self.teams["club_name"] == name) & (self.teams["year"] == season)
+        ]

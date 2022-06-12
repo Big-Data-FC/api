@@ -20,5 +20,15 @@ def get_player():
     return player.to_json(orient="records")
 
 
+@app.route("/team", methods=["GET"])
+def get_team():
+    """
+    Get features of a team
+    """
+    data = json.loads(request.data)
+    player = api.get_team(db, data["teamName"], data["season"])
+    return player.to_json(orient="records")
+
+
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
