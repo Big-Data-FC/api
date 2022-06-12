@@ -26,7 +26,9 @@ def get_team():
     Get features of a team
     """
     data = json.loads(request.data)
-    team = api.get_team(db, data["teamName"], data["season"])
+    team = api.get_team(
+        db, data["teamName"], data["season"], __handle_compact_field(data)
+    )
     return team
 
 
@@ -36,9 +38,14 @@ def get_table():
     Get the final league table
     """
     data = json.loads(request.data)
-    compact = data["compact"] if "compact" in data.keys() else False
-    table = api.get_table(db, data["league"], data["season"], compact)
+    table = api.get_table(
+        db, data["league"], data["season"], __handle_compact_field(data)
+    )
     return table
+
+
+def __handle_compact_field(data) -> bool:
+    return data["compact"] if "compact" in data.keys() else False
 
 
 if __name__ == "__main__":
