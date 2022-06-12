@@ -41,3 +41,17 @@ class Database:
         return self.teams.loc[
             (self.teams["club_name"] == name) & (self.teams["year"] == season)
         ]
+
+    def get_table(self, league, season, compact=False):
+        """
+        Returns a Pandas dataframe object containing
+        the table for the given {league} and {season}
+        """
+        if compact:
+            teams = self.teams[["club_name_ext", "points", "place"]]
+        else:
+            teams = self.teams
+
+        return teams.loc[
+            (self.teams["league"] == league) & (self.teams["year"] == season)
+        ].sort_values(by=["place"], ascending=True)

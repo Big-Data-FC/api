@@ -30,5 +30,16 @@ def get_team():
     return team
 
 
+@app.route("/table", methods=["GET"])
+def get_table():
+    """
+    Get the final league table
+    """
+    data = json.loads(request.data)
+    compact = data["compact"] if "compact" in data.keys() else False
+    table = api.get_table(db, data["league"], data["season"], compact)
+    return table
+
+
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
