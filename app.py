@@ -1,7 +1,7 @@
 #!python3
 
 import json
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 import api
 from db import Database
@@ -17,7 +17,7 @@ def get_player():
     """
     data = json.loads(request.data)
     player = api.get_player(db, data["playerName"], data["season"])
-    return player
+    return jsonify(player)
 
 
 @app.route("/team", methods=["GET"])
@@ -29,7 +29,7 @@ def get_team():
     team = api.get_team(
         db, data["teamName"], data["season"], __handle_compact_field(data)
     )
-    return team
+    return jsonify(team)
 
 
 @app.route("/table", methods=["GET"])
@@ -41,7 +41,7 @@ def get_table():
     table = api.get_table(
         db, data["league"], data["season"], __handle_compact_field(data)
     )
-    return table
+    return jsonify(table)
 
 
 def __handle_compact_field(data) -> bool:
