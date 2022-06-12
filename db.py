@@ -1,4 +1,6 @@
 import pandas as pd
+from pyspark.sql.functions import col
+from pyspark.ml.regression import LinearRegressionModel
 
 
 class Database:
@@ -6,7 +8,7 @@ class Database:
     Main database class
     """
 
-    def __init__(self):
+    def __init__(self, spark):
         print("Loading players dataset")
         self.players = pd.read_csv("data/players.csv")
         print("Columns: " + self.players.columns)
@@ -14,6 +16,13 @@ class Database:
         print("Loading teams dataset")
         self.teams = pd.read_csv("data/teams.csv")
         print("Columns: " + self.teams.columns)
+
+        print("Loading predictions pickle")
+        pred_rdd = spark.spark_ctx.pickleFile("data/fs.pkl").collect()
+        self.pred = spark.spark.createDataFrame(pred_rdd)
+
+        self.model = LinearRegressionModel.load("data/model")
+        self.predictions = self.model.transform(self.pred)
 
     def get_player_by_name(self, name, season):
         """
@@ -60,3 +69,17 @@ class Database:
         return teams.loc[
             (self.teams["league"] == league) & (self.teams["year"] == season)
         ].sort_values(by=["place"], ascending=True)
+
+    def get_prediction(self, league, season):
+        """
+        Returns a Pandas dataframe object containing
+        the predicted table for the given {league} and {season}
+        """
+        return (
+            self.predictions.select(
+                "season", "club_name_ext", "league", "points", "prediction"
+            )
+            .where((col("league") == league) & (col("season") == season))
+            .orderBy("prediction", ascending=False)
+            .toPandas()
+        )

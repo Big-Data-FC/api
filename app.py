@@ -3,11 +3,14 @@
 import json
 from flask import Flask, request, jsonify
 
+
 import api
 from db import Database
+from spark import Spark
 
 app = Flask(__name__)
-db = Database()
+spark = Spark()
+db = Database(spark)
 
 
 @app.route("/player", methods=["GET"])
@@ -42,6 +45,17 @@ def get_table():
         db, data["league"], data["season"], __handle_compact_field(data)
     )
     return jsonify(table)
+
+
+@app.route("/predict", methods=["GET"])
+def predict_table():
+    """
+    Perform predictions
+    """
+    data = json.loads(request.data)
+    prediction = api.get_prediction(db, data["league"], data["season"])
+
+    return jsonify(prediction)
 
 
 def __handle_compact_field(data) -> bool:
