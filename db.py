@@ -17,12 +17,15 @@ class Database:
         self.teams = pd.read_csv("data/teams.csv")
         print("Columns: " + self.teams.columns)
 
-        print("Loading predictions pickle")
-        pred_rdd = spark.spark_ctx.pickleFile("data/fs.pkl").collect()
+        print("Loading predictions pickle...")
+        pred_rdd = spark.spark_ctx.pickleFile("data/df.pkl").collect()
         self.pred = spark.spark.createDataFrame(pred_rdd)
 
         self.model = LinearRegressionModel.load("data/model")
         self.predictions = self.model.transform(self.pred)
+
+        self._normalize_predictions_df()
+        print("Database ready")
 
     def get_player_by_name(self, name, season):
         """
@@ -77,9 +80,15 @@ class Database:
         """
         return (
             self.predictions.select(
-                "season", "club_name_ext", "league", "points", "prediction"
+                "season", "club_name", "league", "points", "prediction"
             )
             .where((col("league") == league) & (col("season") == season))
             .orderBy("prediction", ascending=False)
             .toPandas()
+        )
+
+    def _normalize_predictions_df(self):
+        self.predictions = self.predictions.withColumnRenamed(
+            "attempt_4_regression_linear_regression_predictions",
+            "prediction",
         )

@@ -22,3 +22,5 @@ class Spark:
             .appName("football predictor")
             .getOrCreate()
         )
+
+        print("Spark ready")
